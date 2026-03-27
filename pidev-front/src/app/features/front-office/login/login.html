@@ -1,0 +1,238 @@
+<!-- Background Section -->
+<section class="login-container">
+  <div class="login-wrapper">
+    <div class="login-card animated-card">
+      <!-- Logo/Header -->
+      <div class="login-header text-center mb-5">
+        <div class="logo-circle mb-3">
+          <i class="fa fa-lock fa-2x"></i>
+        </div>
+        <h1 class="h3 fw-bold mb-2">EventConnect</h1>
+        <p class="text-muted">Gérez vos événements en toute sécurité</p>
+      </div>
+
+      <!-- Tabs Navigation -->
+      <ul class="nav nav-pills nav-fill mb-4 tab-navigation" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button 
+            class="nav-link" 
+            [class.active]="!isRegisterMode"
+            (click)="isRegisterMode = false"
+            type="button">
+            <i class="fa fa-sign-in me-2"></i>Connexion
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button 
+            class="nav-link"
+            [class.active]="isRegisterMode"
+            (click)="isRegisterMode = true"
+            type="button">
+            <i class="fa fa-user-plus me-2"></i>Inscription
+          </button>
+        </li>
+      </ul>
+
+      <!-- Login Form -->
+      <div *ngIf="!isRegisterMode" class="form-container animated-form">
+        <form (ngSubmit)="login()">
+          <div class="mb-3">
+            <label class="form-label fw-5">Email</label>
+            <div class="input-group">
+              <span class="input-group-text">
+                <i class="fa fa-envelope"></i>
+              </span>
+              <input 
+                type="email" 
+                class="form-control form-control-lg" 
+                placeholder="votre@email.com"
+                [(ngModel)]="loginEmail" 
+                name="loginEmail"
+                [class.is-invalid]="hasError('loginEmail')">
+            </div>
+            <div class="invalid-feedback d-block" *ngIf="hasError('loginEmail')">
+              <i class="fa fa-exclamation-circle me-1"></i>{{ getError('loginEmail') }}
+            </div>
+          </div>
+
+          <div class="mb-4">
+            <label class="form-label fw-5">Mot de passe</label>
+            <div class="input-group">
+              <span class="input-group-text">
+                <i class="fa fa-lock"></i>
+              </span>
+              <input 
+                type="password" 
+                class="form-control form-control-lg" 
+                placeholder="Votre mot de passe"
+                [(ngModel)]="loginPassword" 
+                name="loginPassword"
+                [class.is-invalid]="hasError('loginPassword')">
+            </div>
+            <div class="invalid-feedback d-block" *ngIf="hasError('loginPassword')">
+              <i class="fa fa-exclamation-circle me-1"></i>{{ getError('loginPassword') }}
+            </div>
+          </div>
+
+          <button 
+            type="submit" 
+            class="btn btn-primary btn-lg w-100 fw-5"
+            [disabled]="loading">
+            <span *ngIf="!loading">
+              <i class="fa fa-sign-in me-2"></i>Se connecter
+            </span>
+            <span *ngIf="loading">
+              <i class="fa fa-spinner fa-spin me-2"></i>Connexion...
+            </span>
+          </button>
+
+          <div class="text-center mt-4">
+            <p class="text-muted">
+              Pas encore de compte? 
+              <a href="javascript:void(0)" (click)="toggleMode()" class="link-primary fw-5">
+                Créer un compte
+              </a>
+            </p>
+          </div>
+        </form>
+      </div>
+
+      <!-- Register Form -->
+      <div *ngIf="isRegisterMode" class="form-container animated-form">
+        <form (ngSubmit)="register()">
+          <div class="row">
+            <!-- First Name -->
+            <div class="col-md-6 mb-3">
+              <label class="form-label fw-5">Prénom <span class="text-danger">*</span></label>
+              <input 
+                type="text" 
+                class="form-control form-control-lg" 
+                placeholder="Prénom"
+                [(ngModel)]="registerFirstName" 
+                name="firstName"
+                [class.is-invalid]="hasError('firstName')">
+              <div class="invalid-feedback d-block" *ngIf="hasError('firstName')">
+                <i class="fa fa-exclamation-circle me-1"></i>{{ getError('firstName') }}
+              </div>
+            </div>
+
+            <!-- Last Name -->
+            <div class="col-md-6 mb-3">
+              <label class="form-label fw-5">Nom <span class="text-danger">*</span></label>
+              <input 
+                type="text" 
+                class="form-control form-control-lg" 
+                placeholder="Nom"
+                [(ngModel)]="registerLastName" 
+                name="lastName"
+                [class.is-invalid]="hasError('lastName')">
+              <div class="invalid-feedback d-block" *ngIf="hasError('lastName')">
+                <i class="fa fa-exclamation-circle me-1"></i>{{ getError('lastName') }}
+              </div>
+            </div>
+          </div>
+
+          <!-- Email -->
+          <div class="mb-3">
+            <label class="form-label fw-5">Email <span class="text-danger">*</span></label>
+            <div class="input-group">
+              <span class="input-group-text">
+                <i class="fa fa-envelope"></i>
+              </span>
+              <input 
+                type="email" 
+                class="form-control form-control-lg" 
+                placeholder="votre@email.com"
+                [(ngModel)]="registerEmail" 
+                name="email"
+                [class.is-invalid]="hasError('email')">
+            </div>
+            <div class="invalid-feedback d-block" *ngIf="hasError('email')">
+              <i class="fa fa-exclamation-circle me-1"></i>{{ getError('email') }}
+            </div>
+          </div>
+
+          <!-- Password -->
+          <div class="mb-3">
+            <label class="form-label fw-5">Mot de passe <span class="text-danger">*</span></label>
+            <div class="input-group">
+              <span class="input-group-text">
+                <i class="fa fa-lock"></i>
+              </span>
+              <input 
+                type="password" 
+                class="form-control form-control-lg" 
+                placeholder="Minimum 4 caractères"
+                [(ngModel)]="registerPassword" 
+                name="password"
+                [class.is-invalid]="hasError('password')">
+            </div>
+            <div class="invalid-feedback d-block" *ngIf="hasError('password')">
+              <i class="fa fa-exclamation-circle me-1"></i>{{ getError('password') }}
+            </div>
+          </div>
+
+          <!-- Confirm Password -->
+          <div class="mb-3">
+            <label class="form-label fw-5">Confirmer le mot de passe <span class="text-danger">*</span></label>
+            <div class="input-group">
+              <span class="input-group-text">
+                <i class="fa fa-lock"></i>
+              </span>
+              <input 
+                type="password" 
+                class="form-control form-control-lg" 
+                placeholder="Répétez le mot de passe"
+                [(ngModel)]="registerPasswordConfirm" 
+                name="passwordConfirm"
+                [class.is-invalid]="hasError('passwordConfirm')">
+            </div>
+            <div class="invalid-feedback d-block" *ngIf="hasError('passwordConfirm')">
+              <i class="fa fa-exclamation-circle me-1"></i>{{ getError('passwordConfirm') }}
+            </div>
+          </div>
+
+          <!-- Role Selection -->
+          <div class="mb-4">
+            <label class="form-label fw-5">Rôle</label>
+            <select class="form-select form-select-lg" [(ngModel)]="registerRole" name="role">
+              <option value="user">Utilisateur</option>
+              <option value="organizer">Organisateur</option>
+            </select>
+            <small class="text-muted d-block mt-2">
+              <i class="fa fa-info-circle me-1"></i>Vous pourrez changer votre rôle plus tard
+            </small>
+          </div>
+
+          <button 
+            type="submit" 
+            class="btn btn-success btn-lg w-100 fw-5"
+            [disabled]="loading">
+            <span *ngIf="!loading">
+              <i class="fa fa-user-plus me-2"></i>Créer un compte
+            </span>
+            <span *ngIf="loading">
+              <i class="fa fa-spinner fa-spin me-2"></i>Création...
+            </span>
+          </button>
+
+          <div class="text-center mt-4">
+            <p class="text-muted">
+              Vous avez déjà un compte? 
+              <a href="javascript:void(0)" (click)="toggleMode()" class="link-success fw-5">
+                Se connecter
+              </a>
+            </p>
+          </div>
+        </form>
+      </div>
+
+      <!-- Footer -->
+      <div class="login-footer text-center mt-5 pt-4 border-top">
+        <p class="text-muted small mb-0">
+          © 2026 EventConnect. Tous droits réservés.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>

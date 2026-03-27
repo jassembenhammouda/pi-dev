@@ -1,0 +1,51 @@
+<div class="chat-list">
+  <div class="list-header">
+    <h2>Messages</h2>
+  </div>
+
+  @if (loading) {
+    <div class="loading-state">
+      @for (i of [1,2,3,4,5]; track i) {
+        <div class="skeleton"></div>
+      }
+    </div>
+  }
+
+  @if (!loading && chats.length === 0) {
+    <div class="empty-state">
+      <span class="empty-icon">💬</span>
+      <p>No conversations yet</p>
+    </div>
+  }
+
+  @if (!loading && chats.length > 0) {
+    <ul class="list">
+      @for (chat of chats; track chat.id) {
+        <li
+          class="chat-item"
+          [class.active]="selected?.id === chat.id"
+          (click)="select(chat)"
+        >
+          <div class="avatar">
+            <span class="initials">{{ initials(chat) }}</span>
+            <span class="online-dot"></span>
+          </div>
+          <div class="info">
+            <div class="top-row">
+              <span class="name">{{ displayName(chat) }}</span>
+              @if (chat.lastMessageTime) {
+                <span class="time">{{ chat.lastMessageTime | date: 'shortTime' }}</span>
+              }
+            </div>
+            <div class="bottom-row">
+              <span class="preview">{{ chat.lastMessage || 'Start a conversation' }}</span>
+              @if (chat.unreadMessages && chat.unreadMessages > 0) {
+                <span class="badge">{{ chat.unreadMessages }}</span>
+              }
+            </div>
+          </div>
+        </li>
+      }
+    </ul>
+  }
+</div>

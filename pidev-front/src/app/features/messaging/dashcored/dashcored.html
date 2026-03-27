@@ -1,0 +1,15 @@
+<div class="shell">
+  <aside class="sidebar">
+    <app-chat-list
+      [currentUserId]="currentUserId"
+      (chatSelected)="onChatSelected($event)"
+    />
+  </aside>
+
+  <main class="main">
+    <app-chat-window
+      [chat]="activeChat"
+      [currentUserId]="currentUserId"
+    />
+  </main>
+</div>

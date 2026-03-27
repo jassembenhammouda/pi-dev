@@ -1,0 +1,36 @@
+<footer class="footer-section ec-footer">
+  <div class="container">
+    <div class="ec-footer__grid">
+      <div class="ec-footer__brand">
+        <span class="ec-footer__mark">EventConnect</span>
+        <p class="ec-footer__tagline">Réservez vos événements en quelques clics.</p>
+      </div>
+      <nav class="ec-footer__links" aria-label="Liens pied de page">
+        <a routerLink="/">Accueil</a>
+        <a routerLink="/clientEvents">Événements</a>
+        <a *ngIf="authService.isAdmin()" routerLink="/event-form">Créer un événement</a>
+        <a *ngIf="authService.isAdmin()" routerLink="/stock">Stock</a>
+      </nav>
+      <div class="ec-footer__social">
+        <a href="#" aria-label="Facebook"><i class="fa fa-facebook"></i></a>
+        <a href="#" aria-label="Twitter"><i class="fa fa-twitter"></i></a>
+        <a href="#" aria-label="LinkedIn"><i class="fa fa-linkedin"></i></a>
+        <a href="#" aria-label="Instagram"><i class="fa fa-instagram"></i></a>
+      </div>
+    </div>
+
+    <div class="ec-footer__partners" aria-hidden="true">
+      <span class="ec-footer__partners-label">Partenaires</span>
+      <div class="ec-footer__partner-logos">
+        <img src="/assets/FrontOffice/img/partner-logo/logo-1.png" alt="">
+        <img src="/assets/FrontOffice/img/partner-logo/logo-2.png" alt="">
+        <img src="/assets/FrontOffice/img/partner-logo/logo-3.png" alt="">
+        <img src="/assets/FrontOffice/img/partner-logo/logo-4.png" alt="">
+      </div>
+    </div>
+
+    <div class="ec-footer__bottom">
+      <p class="ec-footer__copy">© {{ currentYear }} EventConnect. Tous droits réservés.</p>
+    </div>
+  </div>
+</footer>

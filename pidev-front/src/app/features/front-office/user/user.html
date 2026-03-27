@@ -1,0 +1,306 @@
+<!-- Breadcrumb Section Begin -->
+<section class="breadcrumb-section">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-12">
+        <div class="breadcrumb-text">
+          <h2>Gestion des Utilisateurs</h2>
+          <div class="bt-option">
+            <a routerLink="/dashboard">Dashboard</a>
+            <span>Utilisateurs</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<!-- Breadcrumb Section End -->
+
+<section class="user-management-section spad">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-12">
+        <div class="card shadow-sm border-0">
+          <div class="card-body">
+            <!-- Header with Add Button -->
+            <div class="d-flex justify-content-between align-items-center mb-4">
+              <h3 class="h4 mb-0">
+                <i class="fa fa-users me-2"></i>Gestion des Utilisateurs
+              </h3>
+              <button class="btn btn-primary btn-lg" (click)="openCreateForm()" *ngIf="!showForm" [disabled]="loading">
+                <i class="fa fa-plus me-2"></i>Ajouter Utilisateur
+              </button>
+            </div>
+
+            <!-- Login Section -->
+            <div class="mb-4 p-4 bg-gradient rounded border-0 login-section">
+              <h5 class="mb-3">
+                <i class="fa fa-sign-in me-2"></i>Authentification
+              </h5>
+              <div class="row gy-3 align-items-end">
+                <div class="col-md-4">
+                  <label class="form-label small fw-5">Email</label>
+                  <input type="email" class="form-control form-control-lg" placeholder="Votre email" 
+                    [(ngModel)]="loginEmail" name="loginEmail" required />
+                </div>
+                <div class="col-md-4">
+                  <label class="form-label small fw-5">Mot de passe</label>
+                  <input type="password" class="form-control form-control-lg" placeholder="Votre mot de passe" 
+                    [(ngModel)]="loginPassword" name="loginPassword" required />
+                </div>
+                <div class="col-md-4">
+                  <button class="btn btn-success btn-lg w-100" (click)="login()" [disabled]="!loginEmail || !loginPassword">
+                    <i class="fa fa-lock me-2"></i>Se connecter
+                  </button>
+                </div>
+              </div>
+              <div class="mt-3 alert alert-info mb-0" *ngIf="currentUser">
+                <i class="fa fa-user-check me-2"></i>
+                <strong>Connecté:</strong> {{ currentUser.firstName }} {{ currentUser.lastName }} 
+                <span class="badge" [ngClass]="{'bg-primary': currentUser.role === 'admin', 'bg-success': currentUser.role === 'organizer', 'bg-secondary': currentUser.role === 'user'}">
+                  {{ currentUser.role }}
+                </span>
+                <button class="btn btn-sm btn-outline-danger float-end" (click)="logout()">
+                  <i class="fa fa-sign-out me-1"></i>Déconnexion
+                </button>
+              </div>
+            </div>
+
+            <!-- Add/Edit Form Section -->
+            <div *ngIf="showForm" class="mb-4 p-4 bg-light rounded form-section animated-form">
+              <div class="d-flex justify-content-between align-items-center mb-4">
+                <h5 class="mb-0">
+                  <i class="fa" [ngClass]="isEditMode ? 'fa-edit' : 'fa-user-plus'" class="me-2"></i>
+                  {{ isEditMode ? 'Modifier l\'Utilisateur' : 'Créer un Nouvel Utilisateur' }}
+                </h5>
+                <button type="button" class="btn-close" (click)="showForm = false; resetForm()" aria-label="Fermer"></button>
+              </div>
+
+              <form (ngSubmit)="isEditMode ? updateUser() : addUser()" class="needs-validation">
+                <div class="row">
+                  <!-- Prénom -->
+                  <div class="col-md-6">
+                    <div class="form-group mb-3">
+                      <label class="form-label fw-5">Prénom <span class="text-danger">*</span></label>
+                      <input type="text" 
+                        class="form-control" 
+                        [class.is-invalid]="hasError('firstName')"
+                        [(ngModel)]="(isEditMode ? selectedUser : newUser)!.firstName" 
+                        name="firstName" 
+                        placeholder="Entrer le prénom"
+                        required>
+                      <div class="invalid-feedback d-block" *ngIf="hasError('firstName')">
+                        <i class="fa fa-exclamation-circle me-1"></i>{{ getError('firstName') }}
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Nom -->
+                  <div class="col-md-6">
+                    <div class="form-group mb-3">
+                      <label class="form-label fw-5">Nom <span class="text-danger">*</span></label>
+                      <input type="text" 
+                        class="form-control" 
+                        [class.is-invalid]="hasError('lastName')"
+                        [(ngModel)]="(isEditMode ? selectedUser : newUser)!.lastName" 
+                        name="lastName" 
+                        placeholder="Entrer le nom"
+                        required>
+                      <div class="invalid-feedback d-block" *ngIf="hasError('lastName')">
+                        <i class="fa fa-exclamation-circle me-1"></i>{{ getError('lastName') }}
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Email -->
+                  <div class="col-md-6">
+                    <div class="form-group mb-3">
+                      <label class="form-label fw-5">Email <span class="text-danger">*</span></label>
+                      <input type="email" 
+                        class="form-control" 
+                        [class.is-invalid]="hasError('email')"
+                        [(ngModel)]="(isEditMode ? selectedUser : newUser)!.email" 
+                        name="email" 
+                        placeholder="exemple@mail.com"
+                        required>
+                      <div class="invalid-feedback d-block" *ngIf="hasError('email')">
+                        <i class="fa fa-exclamation-circle me-1"></i>{{ getError('email') }}
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Téléphone -->
+                  <div class="col-md-6">
+                    <div class="form-group mb-3">
+                      <label class="form-label fw-5">Téléphone</label>
+                      <input type="tel" 
+                        class="form-control" 
+                        [(ngModel)]="(isEditMode ? selectedUser : newUser)!.phone" 
+                        name="phone"
+                        placeholder="+33 6 XX XX XX XX">
+                    </div>
+                  </div>
+
+                  <!-- Rôle -->
+                  <div class="col-md-6">
+                    <div class="form-group mb-3">
+                      <label class="form-label fw-5">Rôle <span class="text-danger">*</span></label>
+                      <select class="form-control" 
+                        [(ngModel)]="(isEditMode ? selectedUser : newUser)!.role" 
+                        name="role" 
+                        required>
+                        <option value="">-- Sélectionner un rôle --</option>
+                        <option value="user">Utilisateur</option>
+                        <option value="organizer">Organisateur</option>
+                        <option value="admin">Administrateur</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <!-- Password Section (only for create) -->
+                  <ng-container *ngIf="!isEditMode">
+                    <!-- Password -->
+                    <div class="col-md-6">
+                      <div class="form-group mb-3">
+                        <label class="form-label fw-5">Mot de passe <span class="text-danger">*</span></label>
+                        <input type="password" 
+                          class="form-control" 
+                          [class.is-invalid]="hasError('password')"
+                          [(ngModel)]="newUserPassword" 
+                          name="password" 
+                          placeholder="Minimum 4 caractères"
+                          required>
+                        <div class="invalid-feedback d-block" *ngIf="hasError('password')">
+                          <i class="fa fa-exclamation-circle me-1"></i>{{ getError('password') }}
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- Confirm Password -->
+                    <div class="col-md-6">
+                      <div class="form-group mb-3">
+                        <label class="form-label fw-5">Confirmer le mot de passe <span class="text-danger">*</span></label>
+                        <input type="password" 
+                          class="form-control" 
+                          [class.is-invalid]="hasError('confirmPassword')"
+                          [(ngModel)]="confirmPassword" 
+                          name="confirmPassword" 
+                          placeholder="Répéter le mot de passe"
+                          required>
+                        <div class="invalid-feedback d-block" *ngIf="hasError('confirmPassword')">
+                          <i class="fa fa-exclamation-circle me-1"></i>{{ getError('confirmPassword') }}
+                        </div>
+                      </div>
+                    </div>
+                  </ng-container>
+                </div>
+
+                <!-- Form Actions -->
+                <div class="d-flex gap-3 mt-4">
+                  <button type="submit" class="btn btn-success btn-lg" [disabled]="loading">
+                    <span *ngIf="!loading">
+                      <i class="fa" [ngClass]="isEditMode ? 'fa-save' : 'fa-plus'" class="me-2"></i>
+                      {{ isEditMode ? 'Mettre à jour' : 'Créer Utilisateur' }}
+                    </span>
+                    <span *ngIf="loading">
+                      <i class="fa fa-spinner fa-spin me-2"></i>Traitement...
+                    </span>
+                  </button>
+                  <button type="button" class="btn btn-secondary btn-lg" (click)="showForm = false; resetForm()" [disabled]="loading">
+                    <i class="fa fa-times me-2"></i>Annuler
+                  </button>
+                </div>
+              </form>
+            </div>
+
+            <!-- Users Table Section -->
+            <div class="users-table-section">
+              <h5 class="mb-4">
+                <i class="fa fa-list me-2"></i>Liste des Utilisateurs 
+                <span class="badge bg-info float-end">{{ users.length }} utilisateur(s)</span>
+              </h5>
+
+              <!-- Loading State -->
+              <div class="text-center py-5" *ngIf="loading && users.length === 0">
+                <i class="fa fa-spinner fa-spin fa-2x text-primary mb-3"></i>
+                <p class="text-muted">Chargement des utilisateurs...</p>
+              </div>
+
+              <!-- Empty State -->
+              <div class="alert alert-info text-center py-5" *ngIf="!loading && users.length === 0">
+                <i class="fa fa-users fa-2x mb-3"></i>
+                <p>Aucun utilisateur trouvé. <a href="javascript:void(0)" (click)="openCreateForm()" class="alert-link">Créer le premier utilisateur</a></p>
+              </div>
+
+              <!-- Table -->
+              <div class="table-responsive" *ngIf="users.length > 0">
+                <table class="table table-hover align-middle">
+                  <thead class="table-light sticky-top">
+                    <tr>
+                      <th class="text-center" style="width: 60px;">
+                        <i class="fa fa-hashtag"></i>
+                      </th>
+                      <th>Nom Complet</th>
+                      <th>Email</th>
+                      <th>Téléphone</th>
+                      <th class="text-center">Rôle</th>
+                      <th class="text-center" style="width: 140px;">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let user of users" class="fade-in">
+                      <td class="text-center text-muted fw-5">{{ user.id }}</td>
+                      <td>
+                        <div class="d-flex align-items-center">
+                          <div class="avatar-circle me-2">
+                            {{ (user.firstName && user.firstName.charAt(0) || 'U').toUpperCase() }}
+                          </div>
+                          <span class="fw-5">{{ user.firstName }} {{ user.lastName }}</span>
+                        </div>
+                      </td>
+                      <td>
+                        <small class="text-muted">{{ user.email }}</small>
+                      </td>
+                      <td>
+                        <small>{{ user.phone || '-' }}</small>
+                      </td>
+                      <td class="text-center">
+                        <span class="badge" 
+                          [ngClass]="{
+                            'bg-danger': user.role === 'admin',
+                            'bg-success': user.role === 'organizer',
+                            'bg-secondary': user.role === 'user'
+                          }">
+                          <i class="fa" [ngClass]="{
+                            'fa-shield': user.role === 'admin',
+                            'fa-calendar': user.role === 'organizer',
+                            'fa-user': user.role === 'user'
+                          }" class="me-1"></i>
+                          {{ user.role | titlecase }}
+                        </span>
+                      </td>
+                      <td class="text-center">
+                        <button class="btn btn-sm btn-outline-primary me-1" 
+                          (click)="editUser(user)" 
+                          title="Modifier"
+                          [disabled]="loading">
+                          <i class="fa fa-edit"></i>
+                        </button>
+                        <button class="btn btn-sm btn-outline-danger" 
+                          (click)="deleteUser(user.id)" 
+                          title="Supprimer"
+                          [disabled]="loading">
+                          <i class="fa fa-trash"></i>
+                        </button>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

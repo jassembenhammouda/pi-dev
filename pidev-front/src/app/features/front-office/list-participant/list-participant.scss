@@ -1,0 +1,33 @@
+.event-summary {
+  background: #fff;
+  border-radius: 12px;
+  border: 1px solid #e6e6e6;
+  box-shadow: 0 2px 15px rgba(26, 47, 85, 0.08);
+}
+
+.event-summary .badge {
+  font-weight: 600;
+  padding: 0.55rem 0.75rem;
+  margin-bottom: 0.25rem;
+  transition: transform 0.15s ease;
+}
+
+.event-summary .badge:hover {
+  transform: scale(1.03);
+}
+
+.schedule-table-tab .nav-tabs .nav-link.active {
+  background: linear-gradient(120deg, #7a45ff, #ba5bff);
+  color: #fff;
+  font-weight: 700;
+}
+
+.schedule-table-tab .table {
+  border-radius: 0.65rem;
+  overflow: hidden;
+}
+
+.schedule-table-tab .table th,
+.schedule-table-tab .table td {
+  vertical-align: middle;
+}

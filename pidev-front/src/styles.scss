@@ -1,0 +1,170 @@
+/* You can add global styles to this file, and also import other style files */
+
+/* === Palette violette EventConnect === */
+:root {
+  --ec-primary: #7c3aed;
+  --ec-primary-dark: #6d28d9;
+  --ec-accent: #c084fc;
+  --ec-accent-bright: #a855f7;
+  --ec-hero-bg: #1e1b4b;
+  --ec-text-muted: #e9d5ff;
+  --ec-font-sans: "Plus Jakarta Sans", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+
+body {
+  background-color: #faf5ff;
+  font-family: var(--ec-font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+.ec-app {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.ec-main {
+  flex: 1;
+  width: 100%;
+}
+
+/* Page d'accueil — layout moderne géré dans events-client.scss */
+app-events-client {
+  display: block;
+}
+
+/* ========== Thème violet — template global (style.css) ========== */
+.bg-gradient,
+.bd-text .bd-tag-share .s-share a:hover,
+.bh-text .play-btn,
+.schedule-table-tab .nav-tabs .nav-item .nav-link.active,
+.newslatter-inner .ni-form button,
+.latest-item .li-tag,
+.price-item .price-btn:hover,
+.price-item .pi-price,
+.price-item .tr-tag,
+.schedule-tab .nav-tabs .nav-item .nav-link.active,
+.site-btn {
+  background-image: linear-gradient(
+    120deg,
+    var(--ec-primary-dark) 0%,
+    var(--ec-accent-bright) 100%
+  ) !important;
+}
+
+.primary-btn {
+  background-image: linear-gradient(
+    to right,
+    var(--ec-primary-dark) 0%,
+    var(--ec-accent-bright) 100%
+  ) !important;
+}
+
+/* Détails événement / sections "about" */
+.ha-text ul li span {
+  color: var(--ec-primary) !important;
+}
+
+.ha-text .ha-btn:before {
+  background: linear-gradient(
+    90deg,
+    var(--ec-primary-dark),
+    var(--ec-accent-bright)
+  ) !important;
+}
+
+/* Footer : styles principaux dans footer-front.scss (composant) */
+
+/* Pages Success / Cancel (hors layout principal) */
+app-success {
+  .text-success {
+    color: var(--ec-primary-dark) !important;
+  }
+
+  .btn-success {
+    background: linear-gradient(
+      135deg,
+      var(--ec-primary-dark) 0%,
+      var(--ec-accent-bright) 100%
+    ) !important;
+    border: none !important;
+    color: #fff !important;
+  }
+
+  .btn-success:hover {
+    filter: brightness(1.05);
+  }
+
+  .bi-check-circle-fill {
+    fill: var(--ec-primary) !important;
+  }
+}
+
+app-cancel {
+  .btn-secondary {
+    background: linear-gradient(
+      135deg,
+      #5b21b6 0%,
+      var(--ec-primary) 100%
+    ) !important;
+    border: none !important;
+    color: #fff !important;
+  }
+
+  .btn-secondary:hover {
+    filter: brightness(1.05);
+  }
+}
+
+/* Statistiques (route pleine page) */
+app-statistique {
+  display: block;
+  min-height: 100vh;
+  background: #faf5ff;
+  padding-bottom: 2rem;
+}
+
+/* Liste admin événements */
+app-events {
+  display: block;
+}
+
+/* Formulaire événement */
+app-event-form {
+  display: block;
+}
+
+/* Réservation / annulation */
+app-reservation,
+app-cancel-reservation {
+  display: block;
+}
+
+/* Stock */
+app-stock-management {
+  display: block;
+}
+
+/* Messagerie — variables violettes pour bulles / liste */
+app-chat11,
+app-dashcored {
+  display: block;
+  min-height: calc(100vh - 120px);
+  --bg: #faf5ff;
+  --surface: #ffffff;
+  --border: #e9d5ff;
+  --accent: #a855f7;
+  --accent-muted: #ede9fe;
+  --accent-dark: #7c3aed;
+  --hover: #f5f3ff;
+  --text-primary: #1e1b4b;
+  --text-muted: #64748b;
+  --font-display: "Work Sans", system-ui, sans-serif;
+}
+
+/* Centre de notifications (si route dédiée) */
+app-notification-center {
+  display: block;
+  background: #faf5ff;
+  min-height: 60vh;
+}

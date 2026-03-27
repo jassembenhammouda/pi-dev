@@ -1,0 +1,90 @@
+<header
+  class="header-section ec-header"
+  [class.ec-header--open]="navOpen">
+  <div class="container ec-header__inner">
+    <div class="ec-header__brand-row">
+      <a routerLink="/" class="ec-header__logo" aria-label="EventConnect — Accueil">
+        <img src="assets/FrontOffice/img/EventConnect.png" alt="EventConnect">
+      </a>
+
+      <button
+        type="button"
+        class="ec-header__burger"
+        (click)="toggleNav()"
+        [attr.aria-expanded]="navOpen"
+        aria-controls="ec-header-panel"
+        aria-label="Ouvrir ou fermer le menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+
+    <div class="ec-header__panel" id="ec-header-panel">
+      <nav class="mainmenu ec-header__nav" aria-label="Navigation principale">
+        <ul class="ec-header__links">
+          <li routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+            <a routerLink="/" (click)="closeNavOnNavigate()">Accueil</a>
+          </li>
+          <li routerLinkActive="active">
+            <a routerLink="/clientEvents" (click)="closeNavOnNavigate()">Événements</a>
+          </li>
+          <li *ngIf="authService.isAdmin()" routerLinkActive="active">
+            <a routerLink="/stock" (click)="closeNavOnNavigate()">Stock</a>
+          </li>
+          <li *ngIf="authService.isAdmin()" routerLinkActive="active">
+            <a routerLink="/users" (click)="closeNavOnNavigate()">Utilisateurs</a>
+          </li>
+          <li routerLinkActive="active">
+            <a routerLink="/chat" (click)="closeNavOnNavigate()">Chat</a>
+          </li>
+          <li *ngIf="authService.isAdmin()" class="notif-li">
+            <button
+              type="button"
+              (click)="toggleDropdown(); $event.stopPropagation()"
+              class="notif-trigger"
+              [attr.aria-expanded]="showDropdown"
+              aria-haspopup="true"
+              aria-label="Notifications">
+              <i class="fa fa-bell" aria-hidden="true"></i>
+              <span *ngIf="unreadCount > 0" class="badge">{{ unreadCount }}</span>
+            </button>
+            <div *ngIf="showDropdown" class="notif-dropdown" role="menu">
+              <div class="notif-header">
+                <span>Notifications</span>
+                <span *ngIf="notifications.length > 0" class="count">{{ notifications.length }}</span>
+              </div>
+              <div class="notif-list">
+                <div *ngIf="notifications.length === 0" class="empty-notif">Aucune nouvelle alerte</div>
+                <div
+                  *ngFor="let notif of notifications"
+                  class="notif-item"
+                  (click)="markAsRead(notif, $event)"
+                  role="menuitem">
+                  <div class="notif-icon" [ngClass]="notif.type">
+                    <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
+                  </div>
+                  <div class="notif-content">
+                    <p class="msg"><strong>{{ notif.type }}:</strong> {{ notif.message }}</p>
+                    <span class="time">{{ notif.createdAt | date:'dd/MM/yyyy' }} · {{ notif.createdAt | date:'HH:mm' }}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </li>
+        </ul>
+      </nav>
+
+      <div class="ec-header__ctas">
+        <a routerLink="/clientEvents" class="ec-btn ec-btn--outline" (click)="closeNavOnNavigate()">
+          <i class="fa fa-ticket" aria-hidden="true"></i> Billets
+        </a>
+        <a
+          *ngIf="authService.isAdmin()"
+          routerLink="/event-form"
+          class="ec-btn ec-btn--primary"
+          (click)="closeNavOnNavigate()">
+          <i class="fa fa-plus" aria-hidden="true"></i> Créer
+        </a>
+      </div>
+    </div>
+  </div>
+</header>

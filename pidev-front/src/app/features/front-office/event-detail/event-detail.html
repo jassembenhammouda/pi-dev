@@ -1,0 +1,69 @@
+<!-- Event Detail Section Begin -->
+<section class="home-about-section spad">
+  <div class="container">
+    <div class="row">
+
+      <!-- Image -->
+      <div class="col-lg-6">
+        <div class="ha-pic">
+          <img [src]="'assets/FrontOffice/img/EventConnect.png'" alt="{{ eventData?.title }}">
+        </div>
+      </div>
+
+      <!-- Details -->
+      <div class="col-lg-6">
+        <div class="ha-text">
+
+          <h2>{{ eventData?.title }}</h2>
+          <p>{{ eventData?.description }}</p>
+
+          <ul>
+            <li><i class="fa fa-calendar"></i> Date: {{ eventData?.startDate | date:'mediumDate' }}</li>
+            <li><i class="fa fa-map-marker"></i> Location: {{ eventData?.place }}</li>
+            <li><i class="fa fa-user"></i> Participants: {{ eventData?.nbParticipantsActuels }}/{{ eventData?.capacityMax }}</li>
+            <li><i class="fa fa-dollar-sign"></i> Price: {{ eventData?.price | currency }}</li>
+          </ul>
+
+          <!-- Rating -->
+          <div class="rating">
+            <i *ngFor="let star of stars; let i = index"
+               class="fa-star"
+               [class.fas]="i < newFeedback.rating"
+               [class.far]="i >= newFeedback.rating"
+               (click)="setRating(i + 1)">
+            </i>
+          </div>
+
+          <h3>Average : {{ averageRating | number:'1.1-1' }}/5 ⭐</h3>
+
+          <!-- Reserve Button -->
+          <a class="ha-btn" [routerLink]="['/reservation', eventData?.id]">Reserve</a>
+
+          <!-- Message / Chat Button - open chat with alex -->
+          <a class="ha-btn ha-btn-chat" [routerLink]="['/chat']" [queryParams]="{ with: 'alex' }">
+            <i class="fa fa-comment"></i> Message
+          </a>
+
+          <!-- ✅ DEBUG: affichage longueur QR -->
+          <p style="margin-top:12px;color:#888;font-size:12px;">
+            QR length: {{ qrBase64.length || 0 }} | Ready: {{ qrBase64 ? 'YES ✓' : 'NO ✗' }}
+          </p>
+
+          <!-- ✅ QR CODE -->
+          <div class="qr-box" *ngIf="qrBase64 && qrBase64.length > 0">
+            <h4>QR Code de l'événement</h4>
+            <img [src]="'data:image/png;base64,' + qrBase64" alt="QR Code" width="220" (error)="onQrImageError()">
+          </div>
+          
+          <!-- Fallback si le QR ne s'affiche pas -->
+          <div *ngIf="!qrBase64 || qrBase64.length === 0" style="color: red; font-size: 12px; margin-top: 12px;">
+            ⚠️ QR Code non disponible
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+<!-- Event Detail Section End -->

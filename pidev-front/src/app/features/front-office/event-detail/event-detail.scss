@@ -1,0 +1,37 @@
+.ha-btn-chat {
+  margin-left: 10px;
+}
+
+.qr-box {
+  margin-top: 18px;
+  padding: 14px;
+  border: 1px solid #eee;
+  border-radius: 10px;
+  background: #fff;
+  display: inline-block;
+
+  h4 {
+    margin: 0 0 10px 0;
+    font-size: 16px;
+    font-weight: 700;
+  }
+
+  img {
+    width: 220px;
+    height: 220px;
+    object-fit: contain;
+    display: block;
+  }
+}
+
+.qr-loading {
+  margin-top: 10px;
+  font-size: 14px;
+  color: #777;
+}
+
+.qr-debug {
+  margin-top: 10px;
+  font-size: 12px;
+  color: #999;
+}

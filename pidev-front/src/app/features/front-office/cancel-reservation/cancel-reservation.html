@@ -1,0 +1,71 @@
+<!-- Cancel Reservation Section Begin -->
+<section class="home-about-section spad">
+    <div class="container">
+      <div class="row">
+        <!-- Image -->
+        <div class="col-lg-6">
+          <div class="ha-pic">
+            <img [src]="'assets/FrontOffice/img/EventConnect.png'">
+          </div>
+        </div>
+  
+        <!-- Form -->
+        <div class="col-lg-6">
+          <div class="ha-text">
+            <h2>Cancel Reservation</h2>
+            <form [formGroup]="aForm" (ngSubmit)="onSubmit()">
+  
+              <!-- Email -->
+              <div class="form-group mb-3">
+                <label for="emailParticipant">Email</label>
+                <input
+                  type="email"
+                  id="emailParticipant"
+                  class="form-control"
+                  formControlName="emailParticipant"
+                  placeholder="Your email">
+                <div
+                  class="text-danger mt-1"
+                  *ngIf="aForm.get('emailParticipant')?.touched && aForm.get('emailParticipant')?.invalid">
+                  <div *ngIf="aForm.get('emailParticipant')?.errors?.['required']">
+                    Email is required.
+                  </div>
+                  <div *ngIf="aForm.get('emailParticipant')?.errors?.['email']">
+                    Invalid email address.
+                  </div>
+                </div>
+              </div>
+  
+              <!-- Cancel Code -->
+              <div class="form-group mb-3">
+                <label for="cancelCode">Cancellation Code</label>
+                <input
+                  type="text"
+                  id="cancelCode"
+                  class="form-control"
+                  formControlName="cancelCode"
+                  placeholder="Your cancellation code">
+                <div
+                  class="text-danger mt-1"
+                  *ngIf="aForm.get('cancelCode')?.touched && aForm.get('cancelCode')?.invalid">
+                  <div *ngIf="aForm.get('cancelCode')?.errors?.['required']">
+                    Cancellation code is required.
+                  </div>
+                </div>
+              </div>
+  
+              <!-- Actions -->
+              <button type="submit" class="site-btn" [disabled]="aForm.invalid">
+                Confirm Cancellation
+              </button>
+              <button type="button" class="site-btn" routerLink="/clientEvents">
+                Back
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <!-- Cancel Reservation Section End -->
+  

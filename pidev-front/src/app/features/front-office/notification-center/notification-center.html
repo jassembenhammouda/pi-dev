@@ -1,0 +1,125 @@
+<!-- Notification Center Section -->
+<section class="notification-section spad">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-12">
+        <h2>Centre de Notifications</h2>
+        
+        <!-- Stats -->
+        <div class="notification-stats">
+          <div class="stat-card">
+            <span class="stat-number">{{ notifications.length }}</span>
+            <span class="stat-label">Total</span>
+          </div>
+          <div class="stat-card" *ngIf="unreadCount > 0">
+            <span class="stat-number unread">{{ unreadCount }}</span>
+            <span class="stat-label">Non lues</span>
+          </div>
+        </div>
+
+        <!-- Filters -->
+        <div class="notification-filters">
+          <button 
+            class="filter-btn"
+            [class.active]="selectedFilter === 'all'"
+            (click)="onFilterChange('all')">
+            Tous
+          </button>
+          <button 
+            class="filter-btn"
+            [class.active]="selectedFilter === 'unread'"
+            (click)="onFilterChange('unread')"
+            *ngIf="unreadCount > 0">
+            Non lues
+          </button>
+          <button 
+            class="filter-btn"
+            [class.active]="selectedFilter === 'reminder'"
+            (click)="onFilterChange('reminder')">
+            ⏰ Rappels
+          </button>
+          <button 
+            class="filter-btn"
+            [class.active]="selectedFilter === 'availability'"
+            (click)="onFilterChange('availability')">
+            ✅ Disponibilité
+          </button>
+          <button 
+            class="filter-btn"
+            [class.active]="selectedFilter === 'price_change'"
+            (click)="onFilterChange('price_change')">
+            💰 Prix
+          </button>
+          <button 
+            class="filter-btn"
+            [class.active]="selectedFilter === 'new_event'"
+            (click)="onFilterChange('new_event')">
+            🎉 Nouveaux
+          </button>
+          <button 
+            class="filter-btn"
+            [class.active]="selectedFilter === 'cancellation'"
+            (click)="onFilterChange('cancellation')">
+            ❌ Annulations
+          </button>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="notification-actions" *ngIf="unreadCount > 0">
+          <button class="btn-mark-all" (click)="markAllAsRead()">
+            Marquer tout comme lu
+          </button>
+        </div>
+
+        <!-- Notifications List -->
+        <div class="notifications-list">
+          <div 
+            class="notification-card"
+            *ngFor="let notification of filteredNotifications"
+            [class.unread]="!notification.isRead">
+
+            <!-- Icon -->
+            <div class="notification-icon" 
+              [style.backgroundColor]="getNotificationColor(notification.type)">
+              {{ getNotificationIcon(notification.type) }}
+            </div>
+
+            <!-- Content -->
+            <div class="notification-content">
+              <h4 class="notification-title">
+                {{ notification.title }}
+                <span class="unread-badge" *ngIf="!notification.isRead">NOUVEAU</span>
+              </h4>
+              <p class="notification-message">{{ notification.message }}</p>
+              <span class="notification-time">
+                {{ notification.createdAt | date:'dd/MM/yyyy' }} · {{ notification.createdAt | date:'HH:mm' }}
+              </span>
+            </div>
+
+            <!-- Actions -->
+            <div class="notification-actions-item">
+              <button 
+                class="btn-read"
+                *ngIf="!notification.isRead"
+                (click)="markAsRead(notification)"
+                title="Marquer comme lu">
+                ✓
+              </button>
+              <button 
+                class="btn-delete"
+                (click)="deleteNotification(notification)"
+                title="Supprimer">
+                ✕
+              </button>
+            </div>
+          </div>
+
+          <!-- Empty State -->
+          <div class="empty-state" *ngIf="filteredNotifications.length === 0">
+            <p>📭 Aucune notification</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

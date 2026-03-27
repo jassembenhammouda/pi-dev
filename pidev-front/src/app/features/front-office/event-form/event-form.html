@@ -1,0 +1,101 @@
+<section class="contact-from-section spad"> 
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-12">
+          <div class="section-title">
+            <h2>Create New Event</h2>
+            <p>Fill out the form below to add a new event to EventConnect.</p>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-lg-12">
+          <form [formGroup]="aForm" (ngSubmit)="addEvent()" class="comment-form contact-form">
+            <div class="row">
+  
+              <!-- Title -->
+              <div class="col-lg-6">
+                <input type="text" formControlName="title" placeholder="Event Title">
+                <div class="text-danger" *ngIf="aForm.get('title')?.touched && aForm.get('title')?.invalid">
+                  <small *ngIf="aForm.get('title')?.errors?.['required']">Title is required.</small>
+                  <small *ngIf="aForm.get('title')?.errors?.['minlength']">Title must be at least 3 characters.</small>
+                  <small *ngIf="aForm.get('title')?.errors?.['pattern']">The title must contain only letters and spaces.</small>
+
+                </div>
+              </div>
+  
+              <!-- Place -->
+              <div class="col-lg-6">
+                <input type="text" formControlName="place" placeholder="Place">
+                <div class="text-danger" *ngIf="aForm.get('place')?.touched && aForm.get('place')?.invalid">
+                  <small *ngIf="aForm.get('place')?.errors?.['required']">Place is required.</small>
+                  <small *ngIf="aForm.get('place')?.errors?.['minlength']">Place must be at least 3 characters.</small>
+                  <small *ngIf="aForm.get('place')?.errors?.['pattern']">The place must contain only letters and spaces.</small>
+                </div>
+              </div>
+  
+              <!-- Description -->
+              <div class="col-lg-12">
+                <textarea formControlName="description" placeholder="Description"></textarea>
+                <div class="text-danger" *ngIf="aForm.get('description')?.touched && aForm.get('description')?.invalid">
+                  <small *ngIf="aForm.get('description')?.errors?.['required']">Description is required.</small>
+                  <small *ngIf="aForm.get('description')?.errors?.['minlength']">Description must be at least 10 characters.</small>
+                </div>
+              </div>
+  
+              <!-- Start Date -->
+              <div class="col-lg-6">
+                <input type="date" formControlName="startDate">
+                <div class="text-danger" *ngIf="aForm.get('startDate')?.touched && aForm.get('startDate')?.invalid">
+                  <small *ngIf="aForm.get('startDate')?.errors?.['required']">Start date is required.</small>
+                </div>
+              </div>
+  
+              <!-- End Date -->
+              <div class="col-lg-6">
+                <input type="date" formControlName="endDate">
+                <div class="text-danger" *ngIf="aForm.get('endDate')?.touched && aForm.get('endDate')?.invalid">
+                  <small *ngIf="aForm.get('endDate')?.errors?.['required']">End date is required.</small>
+                </div>
+              </div>
+  
+              <!-- Erreur globale sur les dates -->
+              <div class="col-lg-12" *ngIf="aForm.errors?.['dateInvalid'] && aForm.touched">
+                <div class="text-danger">
+                  <small>Start date cannot be after end date.</small>
+                </div>
+              </div>
+  
+              <!-- Capacity -->
+              <div class="col-lg-12">
+                <input type="number" formControlName="capacityMax" placeholder="Maximum Capacity">
+                <div class="text-danger" *ngIf="aForm.get('capacityMax')?.touched && aForm.get('capacityMax')?.invalid">
+                  <small *ngIf="aForm.get('capacityMax')?.errors?.['required']">Capacity is required.</small>
+                  <small *ngIf="aForm.get('capacityMax')?.errors?.['min']">Capacity must be at least 1.</small>
+                </div>
+              </div>
+
+              <!-- price -->
+              <div class="col-lg-12">
+                <input type="number" formControlName="price" placeholder="price">
+                <div class="text-danger" *ngIf="aForm.get('price')?.touched && aForm.get('price')?.invalid">
+                  <small *ngIf="aForm.get('price')?.errors?.['required']"> price is required.</small>
+                  <small *ngIf="aForm.get('price')?.errors?.['min']">price must be positif.</small>
+                </div>
+              </div>
+  
+              <!-- Submit -->
+               
+              <div class="col-lg-12 text-center">
+                <button type="submit" class="site-btn " [disabled]="aForm.invalid">Create Event</button>
+                <button  class="site-btn" routerLink="/listEvents" >Cancel</button>
+                <button type="button" class="site-btn" (click)="predictEvent()">Predict Success</button>
+              </div>
+              
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </section>
+  

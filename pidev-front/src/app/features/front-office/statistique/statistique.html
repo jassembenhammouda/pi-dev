@@ -1,0 +1,144 @@
+<div class="statistics-container">
+
+  <div class="mt-4 text-center">
+    <button class="btn btn-success me-2" routerLink="/listEvents">List Events</button>
+    <button class="btn btn-success me-2" (click)="downloadCsv()">Export CSV</button>
+  </div>
+
+  <div class="header">
+    <h1>EventConnect Dashboard</h1>
+    <p>Management and analysis of your events</p>
+  </div>
+
+  <!-- Event statistics section -->
+  <div class="event-stats-section">
+    <h2 class="section-title">Event Statistics</h2>
+    <div class="stats-cards">
+
+      <!-- Confirmed -->
+      <div class="stat-card">
+        <div class="card-icon confirmed">
+          <i class="fas fa-check-circle"></i>
+        </div>
+        <div class="card-content">
+          <h3>{{ confirmedCount }}</h3>
+          <p>Confirmed</p>
+        </div>
+      </div>
+
+      <!-- Pending -->
+      <div class="stat-card">
+        <div class="card-icon pending">
+          <i class="fas fa-clock"></i>
+        </div>
+        <div class="card-content">
+          <h3>{{ pendingCount }}</h3>
+          <p>Pending</p>
+        </div>
+      </div>
+
+      <!-- Average rating -->
+      <div class="stat-card">
+        <div class="card-icon rating">
+          <i class="fas fa-star"></i>
+        </div>
+        <div class="card-content">
+          <h3>{{ averageRating | number:'1.1-1' }}</h3>
+          <p>Average rating</p>
+        </div>
+      </div>
+
+      <!-- Income by Event -->
+      <div class="stat-card">
+        <div class="card-icon income">
+          <i class="fas fa-dollar-sign"></i>
+        </div>
+        <div class="card-content">
+          <h3>{{ incomeEvent | number:'1.2-2' }}</h3>
+          <p>Income by Event</p>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Reservations chart placeholder -->
+    <div class="chart-container">
+      <div class="chart-header">
+        <h3>Reservations by status</h3>
+      </div>
+      <canvas #reservationChart></canvas>
+    </div>
+
+
+  <!-- General statistics section -->
+  <div class="general-stats-section">
+    <h2 class="section-title">General Statistics</h2>
+    <div class="stats-cards">
+
+      <!-- Total events -->
+      <div class="stat-card">
+        <div class="card-icon events">
+          <i class="fas fa-calendar-alt"></i>
+        </div>
+        <div class="card-content">
+          <h3>{{ eventCount }}</h3>
+          <p>Total events</p>
+        </div>
+      </div>
+
+      <!-- Total Income -->
+      <div class="stat-card">
+        <div class="card-icon revenue">
+          <i class="fas fa-coins"></i>
+        </div>
+        <div class="card-content">
+          <h3>{{ totalIncome | number:'1.2-2' }}</h3>
+          <p>Total Income</p>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Reservations by Event -->
+    <div class="events-reservations">
+      <h3 class="sub-section-title">Reservations by Event</h3>
+      <div class="events-grid">
+        <div class="event-reservation-card" *ngFor="let event of countReservation">
+          <div class="event-header">
+            <div class="reservation-count">
+              <span class="count-number">{{ event[1] }}</span>
+              <span class="count-label">reservations</span>
+            </div>
+            <i class="fas fa-ticket-alt"></i>
+          </div>
+          <div class="event-name">{{ event[0] }}</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Top participants -->
+  <div class="top-participants">
+    <div class="section-header">
+      <h3>Most active participants</h3>
+      <i class="fas fa-users"></i>
+    </div>
+    <div class="participants-list">
+      <div class="participant-item" *ngFor="let participant of topParticipant; let i = index">
+        <div class="participant-rank">{{ i + 1 }}</div>
+        <div class="participant-info">
+          <h4>{{ participant.firstNameParticipant }} {{ participant.lastNameParticipant }}</h4>
+          <p>{{ participant.emailParticipant }}</p>
+        </div>
+        <div class="participant-stats">
+          <span class="badge">{{ participant.total }} participations</span>
+        </div>
+        <div class="mt-4 text-center">
+          <button class="btn btn-success me-2" (click)="sendFreeAccess(participant)">Free Access</button>
+          <button class="btn btn-warning" (click)="sendDiscount(participant)">Discount</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>

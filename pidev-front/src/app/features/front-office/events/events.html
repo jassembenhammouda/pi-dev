@@ -1,0 +1,189 @@
+<!-- Events Section Begin -->
+<section class="schedule-section spad">
+    <div class="container">
+      <!-- Title -->
+      <div class="row">
+        <div class="col-lg-12">
+          <div class="section-title">
+            <h2>List Events</h2>
+          </div>
+        </div>
+      </div>
+  
+      <!-- Search Bar -->
+      <div class="row mb-4">
+        <div class="col-lg-12">
+          <div class="search-container">
+            <div class="input-group">
+              <input 
+                type="text" 
+                class="form-control" 
+                placeholder="Search events by title, description or location..."
+                [(ngModel)]="searchTerm"
+                (input)="currentPage = 0; loadEvents()"
+              >
+              <button class="btn btn-outline-secondary" type="button">
+                <i class="fa fa-search"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+  
+      <!-- Loading Spinner -->
+      <div class="row" *ngIf="isLoading">
+        <div class="col-lg-12 text-center">
+          <div class="spinner-border text-primary" role="status">
+            <span class="sr-only">Loading...</span>
+          </div>
+          <p>Loading events...</p>
+        </div>
+      </div>
+  
+      <!-- Events List -->
+      <div class="row" *ngIf="!isLoading">
+        <div class="col-lg-12">
+          <div class="schedule-tab">
+            <div class="tab-content">
+              <div class="tab-pane active" id="events-list" role="tabpanel">
+  
+                <!-- Single Event Item -->
+                <div class="st-content" *ngFor="let event of filteredEvents(); let i = index">
+                  <div class="container">
+                    <div class="row event-card">
+                      
+                      <!-- Image -->
+                      <div class="col-lg-3">
+                        <div class="sc-pic">
+                          <img src="assets/FrontOffice/img/EventConnect.png" alt="{{ event.title }}">
+                        </div>
+                      </div>
+  
+                      <!-- Title + Description -->
+                      <div class="col-lg-5">
+                        <div class="sc-text">
+                          <h4>{{ event.title }}</h4>
+                          <ul>
+                            <li>
+                              <i class="fa fa-file-text-o"></i> 
+                              {{ event.description | slice:0:80 }}...
+                            </li>
+                            <li>
+                              <i class="fa fa-users"></i>    
+                              Capacity: {{ event.capacityMax }} participants
+                            </li>
+                          </ul>
+                          
+                          <!-- Action Buttons Group -->
+                          <div class="action-buttons">
+                            <button class="btn btn-participant" [routerLink]="['/listParticipant', event.id]">
+                              <i class="fa fa-users"></i> Participants
+                            </button>
+                            <button class="btn btn-stats" [routerLink]="['/statistique', event.id]">
+                              <i class="fa fa-bar-chart"></i> Statistics
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+  
+                      <!-- Infos -->
+                      <div class="col-lg-4">
+                        <ul class="sc-widget">
+                          <li>
+                            <i class="fa fa-calendar"></i> 
+                            {{ event.startDate | date:'dd/MM/yyyy' }} - {{ event.endDate | date:'dd/MM/yyyy' }}
+                          </li>
+                          <li>
+                            <i class="fa fa-map-marker"></i> 
+                            {{ event.place }}
+                          </li>
+                          <li>
+                            <i class="fa fa-dollar-sign"></i> 
+                            {{ event.price | currency }}
+                          </li>
+                          <li class="mt-3">
+                            <div class="admin-buttons">
+                              <button class="btn btn-edit" (click)="editEvent(event.id)">
+                                <i class="fa fa-edit"></i> Edit
+                              </button>
+                              <button class="btn btn-delete" (click)="deleteEvent(event.id)">
+                                <i class="fa fa-trash"></i> Delete
+                              </button>
+                            </div>
+                          </li>
+                        </ul>
+                      </div>
+  
+                    </div>
+                  </div>
+                </div>
+  
+                <!-- No Events Message -->
+                <div class="st-content" *ngIf="filteredEvents().length === 0">
+                  <div class="container">
+                    <div class="row">
+                      <div class="col-lg-12 text-center">
+                        <div class="no-events">
+                          <i class="fa fa-calendar-times-o fa-3x mb-3 text-muted"></i>
+                          <h4>No events found</h4>
+                          <p class="text-muted">
+                            {{ searchTerm ? 'No events match your search criteria.' : 'No events available at the moment.' }}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+  
+              </div> <!-- tab-pane -->
+            </div>
+          </div>
+        </div>
+      </div>
+  
+      <!-- Pagination -->
+      <div class="row mt-4" *ngIf="!isLoading && totalPages > 1">
+        <div class="col-lg-12">
+          <nav aria-label="Events pagination">
+            <ul class="pagination justify-content-center">
+              
+              <!-- Previous -->
+              <li class="page-item" [class.disabled]="currentPage === 0">
+                <button class="btn btn-pagination" (click)="prevPage()" [disabled]="currentPage === 0">
+                  <i class="fa fa-chevron-left"></i> Previous
+                </button>
+              </li>
+  
+              <!-- Page Numbers -->
+              <li 
+                class="page-item" 
+                *ngFor="let page of [].constructor(totalPages); let i = index"
+                [class.active]="i === currentPage"
+              >
+                <button class="btn btn-pagination" (click)="goToPage(i)">
+                  {{ i + 1 }}
+                </button>
+              </li>
+  
+              <!-- Next -->
+              <li class="page-item" [class.disabled]="currentPage >= totalPages - 1">
+                <button class="btn btn-pagination" (click)="nextPage()" [disabled]="currentPage >= totalPages - 1">
+                  Next <i class="fa fa-chevron-right"></i>
+                </button>
+              </li>
+  
+            </ul>
+          </nav>
+        </div>
+      </div>
+  
+      <!-- Add Event Button -->
+      <div class="row mt-4">
+        <div class="col-lg-12 text-center">
+            <button class="site-btn" routerLink="/event-form">Add New Event</button>
+        </div>
+      </div>
+  
+    </div>
+  </section>
+  <!-- Events Section End -->

@@ -1,0 +1,138 @@
+<!-- Participant Form Section Begin -->
+<section class="home-about-section spad">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-6">
+          <div class="ha-pic">
+            <img [src]="'assets/FrontOffice/img/EventConnect.png'" >
+          </div>
+        </div>
+  
+        <div class="col-lg-6">
+          <div class="ha-text">
+            <h2>Reserve a Spot</h2>
+            <form [formGroup]="aForm" (ngSubmit)="onSubmit()">
+              
+              <!-- First Name -->
+              <div class="form-group mb-3">
+                <label for="firstNameParticipant">First Name</label>
+                <input type="text" id="firstNameParticipant" class="form-control"
+                       formControlName="firstNameParticipant" placeholder="Your first name">
+                <div class="text-danger mt-1" *ngIf="aForm.get('firstNameParticipant')?.touched && aForm.get('firstNameParticipant')?.invalid">
+                  <div *ngIf="aForm.get('firstNameParticipant')?.errors?.['required']">First name is required.</div>
+                  <div *ngIf="aForm.get('firstNameParticipant')?.errors?.['minlength']">
+                    Minimum 2 characters required.
+                  </div>
+                </div>
+              </div>
+  
+              <!-- Last Name -->
+              <div class="form-group mb-3">
+                <label for="lastNameParticipant">Last Name</label>
+                <input type="text" id="lastNameParticipant" class="form-control"
+                       formControlName="lastNameParticipant" placeholder="Your last name">
+                <div class="text-danger mt-1" *ngIf="aForm.get('lastNameParticipant')?.touched && aForm.get('lastNameParticipant')?.invalid">
+                  <div *ngIf="aForm.get('lastNameParticipant')?.errors?.['required']">Last name is required.</div>
+                  <div *ngIf="aForm.get('lastNameParticipant')?.errors?.['minlength']">
+                    Minimum 2 characters required.
+                  </div>
+                </div>
+              </div>
+  
+              <!-- Email -->
+              <div class="form-group mb-3">
+                <label for="emailParticipant">Email</label>
+                <input type="email" id="emailParticipant" class="form-control"
+                       formControlName="emailParticipant" placeholder="Your email">
+                <div class="text-danger mt-1" *ngIf="aForm.get('emailParticipant')?.touched && aForm.get('emailParticipant')?.invalid">
+                  <div *ngIf="aForm.get('emailParticipant')?.errors?.['required']">Email is required.</div>
+                  <div *ngIf="aForm.get('emailParticipant')?.errors?.['email']">Invalid email address.</div>
+                </div>
+              </div>
+  
+              <!-- Number of Places -->
+              <div class="form-group mb-3">
+                <label for="nbPlace">Number of Spots</label>
+                <input type="number" id="nbPlace" class="form-control"
+                       formControlName="nbPlace" placeholder="Number of spots">
+                <div class="text-danger mt-1" *ngIf="aForm.get('nbPlace')?.touched && aForm.get('nbPlace')?.invalid">
+                  <div *ngIf="aForm.get('nbPlace')?.errors?.['required']">Number of spots is required.</div>
+                  <div *ngIf="aForm.get('nbPlace')?.errors?.['min']">At least 1 spot is required.</div>
+                </div>
+              </div>
+
+              <div class="form-group mb-3">
+                <label for="discountCode">Discount Code</label>
+                <div class="input-group">
+                  <input
+                    type="text"
+                    id="discountCode"
+                    class="form-control"
+                    formControlName="discountCode"
+                    placeholder="Enter discount code">
+                  <button
+                    type="button"
+                    class="btn btn-secondary"
+                    (click)="applyDiscountPreview()">
+                    Apply
+                  </button>
+                </div>
+              </div>
+
+              <!-- Pricing summary -->
+              <div class="form-group mb-3" *ngIf="originalPrice">
+                <label>Pricing summary</label>
+
+                <!-- Sans réduction -->
+                <div *ngIf="!discountAmount || !discountPercent">
+                  <p class="mb-0">
+                    <span class="fw-bold">Total:</span>
+                    <span class="ms-2 fw-bold">
+                      {{ originalPrice | currency:'USD':'symbol' }}
+                    </span>
+                  </p>
+                </div>
+
+                <!-- Avec réduction -->
+                <div *ngIf="discountAmount && discountPercent">
+                  <p class="mb-1">
+                    <span class="fw-bold">Original total:</span>
+                    <span class="ms-2 text-muted" style="text-decoration: line-through;">
+                      {{ originalPrice | currency:'USD':'symbol' }}
+                    </span>
+                  </p>
+                  <p class="mb-1 text-success">
+                    <span class="fw-bold">Discount:</span>
+                    <span class="ms-2">
+                      -{{ discountAmount | currency:'USD':'symbol' }}
+                      ({{ discountPercent }}%)
+                    </span>
+                  </p>
+                  <p class="mb-0">
+                    <span class="fw-bold">Final total:</span>
+                    <span class="ms-2 fw-bold text-success">
+                      {{ discountedPrice | currency:'USD':'symbol' }}
+                    </span>
+                  </p>
+                </div>
+              </div>
+  
+              <!-- Submit Button -->
+              <div class="d-flex gap-2">
+                <button type="submit" class="site-btn" [disabled]="aForm.invalid || loading">
+                  <span *ngIf="!loading">Reserve</span>
+                  <span *ngIf="loading"><i class="fa fa-spinner fa-spin"></i> Processing...</span>
+                </button>
+  
+                <button type="button" routerLink="/clientEvents" class="site-btn">Cancel</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <!-- Participant Form Section End -->
+
+  
+  

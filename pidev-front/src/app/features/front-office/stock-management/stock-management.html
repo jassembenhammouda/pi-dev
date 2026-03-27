@@ -1,0 +1,300 @@
+<div class="container mt-4">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+      <h2>🌍 Tableau de Bord d'Impact</h2>
+      <span class="badge bg-light text-primary border border-primary">
+        <i class="fa fa-bolt"></i> Attribution Automatique Active
+      </span>
+    </div>
+    <div class="d-flex gap-2">
+      <button class="btn btn-outline-primary" (click)="showAddNeedModal = true">📝 Enregistrer un Besoin</button>
+      <button class="btn btn-outline-secondary" (click)="downloadReport()">
+        📄 Rapport d'Impact PDF
+      </button>
+      <button class="btn btn-success" (click)="showAddModal = true">🎁 Nouveau Don</button>
+    </div>
+  </div>
+
+  <!-- Dashboard Stats -->
+  <div class="row mb-4">
+    <div class="col-md-8">
+      <div class="row">
+        <div class="col-md-6 mb-3">
+          <div class="card border-0 shadow-sm bg-light-success h-100">
+            <div class="card-body">
+              <h6 class="text-muted">ÉCONOMIES CO2</h6>
+              <p class="h3 mb-0 text-success">{{ statistics.totalCO2Saved?.toFixed(2) || 0 }} kg</p>
+              <small class="text-muted">Émissions de gaz à effet de serre évitées</small>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6 mb-3">
+          <div class="card border-0 shadow-sm bg-light-primary h-100">
+            <div class="card-body">
+              <h6 class="text-muted">EAU SAUVEGARDÉE</h6>
+              <p class="h3 mb-0 text-primary">{{ statistics.totalWaterSaved?.toFixed(0) || 0 }} L</p>
+              <small class="text-muted">Ressources hydriques préservées</small>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6 mb-3">
+          <div class="card border-0 shadow-sm bg-light-info h-100">
+            <div class="card-body">
+              <h6 class="text-muted">VALEUR SOCIALE</h6>
+              <p class="h3 mb-0 text-info">{{ statistics.totalEconomicValue || 0 | currency:'EUR' }}</p>
+              <small class="text-muted">Valeur des repas redistribués</small>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6 mb-3">
+          <div class="card border-0 shadow-sm bg-light-danger h-100">
+            <div class="card-body">
+              <h6 class="text-muted">RISQUES GASPILLAGE</h6>
+              <p class="h3 mb-0 text-danger">{{ statistics.criticalRiskCount || 0 }} Articles</p>
+              <small class="text-muted">Expiration à moins de 5 jours</small>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="card border-0 shadow-sm h-100">
+        <div class="card-body text-center">
+          <canvas #statsChart height="200"></canvas>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tabs -->
+  <ul class="nav nav-tabs mb-4 border-0 shadow-sm bg-white p-2 rounded">
+    <li class="nav-item">
+      <button class="nav-link border-0" [class.active]="activeTab === 'inventory'" (click)="activeTab = 'inventory'">
+        📦 Inventaire des Dons
+      </button>
+    </li>
+    <li class="nav-item">
+      <button class="nav-link border-0" [class.active]="activeTab === 'needs'" (click)="activeTab = 'needs'">
+        🤝 Besoins des Associations
+      </button>
+    </li>
+  </ul>
+
+  <!-- Inventory Table -->
+  <div *ngIf="activeTab === 'inventory'" class="card border-0 shadow-sm">
+    <div class="card-body p-0">
+      <table class="table table-hover mb-0">
+        <thead class="bg-light">
+          <tr>
+            <th class="border-0 px-4">Produit</th>
+            <th class="border-0">Catégorie</th>
+            <th class="border-0">Quantité</th>
+            <th class="border-0">Expiration</th>
+            <th class="border-0">Valeur</th>
+            <th class="border-0 px-4 text-end">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let item of stock">
+            <td class="px-4 py-3"><strong>{{ item.name }}</strong></td>
+            <td>{{ item.category }}</td>
+            <td>
+              <span class="badge rounded-pill" [ngClass]="item.quantity < 5 ? 'bg-danger' : 'bg-success'">
+                {{ item.quantity }} {{ item.unit }}
+              </span>
+            </td>
+            <td>
+              <span class="text-muted">{{ item.expirationDate | date:'mediumDate' }}</span>
+            </td>
+            <td>{{ item.estimatedValue | currency:'EUR' }}</td>
+            <td class="px-4 text-end">
+              <button class="btn btn-sm btn-outline-primary rounded-pill px-3" (click)="openDistributeModal(item)">Distribuer</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Needs Matching Table -->
+  <div *ngIf="activeTab === 'needs'" class="card border-0 shadow-sm">
+    <div class="card-body p-0">
+      <table class="table table-hover mb-0">
+        <thead class="bg-light">
+          <tr>
+            <th class="border-0 px-4">Association</th>
+            <th class="border-0">Catégorie Demandée</th>
+            <th class="border-0">Progression</th>
+            <th class="border-0">Priorité</th>
+            <th class="border-0 px-4 text-end">Smart Match</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let need of needs">
+            <td class="px-4 py-3"><strong>{{ need.associationName }}</strong></td>
+            <td>{{ need.category }}</td>
+            <td>
+              <div class="progress" style="height: 8px; width: 150px;">
+                <div class="progress-bar bg-success" role="progressbar" 
+                     [style.width.%]="(need.quantitySatisfied / need.quantityRequested) * 100"></div>
+              </div>
+              <small class="text-muted">{{ need.quantitySatisfied }}/{{ need.quantityRequested }}</small>
+            </td>
+            <td>
+              <span class="badge rounded-pill" 
+                    [ngClass]="{'bg-danger': need.priority === 'CRITICAL', 'bg-warning': need.priority === 'MEDIUM', 'bg-info': need.priority === 'LOW'}">
+                {{ need.priority }}
+              </span>
+            </td>
+            <td class="px-4 text-end">
+              <div class="dropdown d-inline-block position-relative">
+                <button class="btn btn-sm btn-primary rounded-pill px-3 dropdown-toggle" 
+                        type="button" (click)="toggleDropdown(need.id)">
+                  Satisfaire
+                </button>
+                <ul class="dropdown-menu shadow border-0" [class.show]="openDropdownId === need.id" 
+                    style="position: absolute; right: 0; top: 100%; z-index: 1000; display: block;" *ngIf="openDropdownId === need.id">
+                  <li *ngFor="let item of getMatchingStock(need.category)">
+                    <a class="dropdown-item py-2" href="javascript:void(0)" (click)="openDistributeModal(item, need); openDropdownId = null">
+                       Utiliser <strong>{{ item.name }}</strong> ({{ item.quantity }} dispos)
+                    </a>
+                  </li>
+                  <li *ngIf="getMatchingStock(need.category).length === 0">
+                    <span class="dropdown-item disabled text-muted">Aucun stock disponible</span>
+                  </li>
+                </ul>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Add Need Modal -->
+  <div class="modal d-block" *ngIf="showAddNeedModal" style="background: rgba(0,0,0,0.5); z-index: 1050;">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content border-0 shadow">
+        <div class="modal-header bg-primary text-white">
+          <h5 class="modal-title">📝 Enregistrer un Nouveau Besoin</h5>
+          <button type="button" class="btn-close btn-close-white" (click)="showAddNeedModal = false"></button>
+        </div>
+        <div class="modal-body">
+          <form (ngSubmit)="addNeed()">
+            <div class="mb-3">
+              <label class="form-label">Association</label>
+              <input type="text" class="form-control" [(ngModel)]="newNeed.associationName" name="assocName" required>
+            </div>
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <label class="form-label">Catégorie</label>
+                <select class="form-control" [(ngModel)]="newNeed.category" name="cat" required>
+                  <option value="Fruits & Légumes">Fruits & Légumes</option>
+                  <option value="Viande">Viande</option>
+                  <option value="Produits Laitiers">Produits Laitiers</option>
+                  <option value="Boulangerie">Boulangerie</option>
+                  <option value="Epicerie">Epicerie</option>
+                </select>
+              </div>
+              <div class="col-md-6 mb-3">
+                <label class="form-label">Quantité Requise</label>
+                <input type="number" class="form-control" [(ngModel)]="newNeed.quantityRequested" name="qtyReq" required>
+              </div>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Priorité</label>
+              <select class="form-control" [(ngModel)]="newNeed.priority" name="prio">
+                <option value="CRITICAL">Critique</option>
+                <option value="MEDIUM">Moyenne</option>
+                <option value="LOW">Basse</option>
+              </select>
+            </div>
+            <button type="submit" class="btn btn-primary w-100 py-2 rounded-pill">Publier le Besoin</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Add Modal -->
+  <div class="modal d-block" *ngIf="showAddModal" style="background: rgba(0,0,0,0.5)">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Nouveau Produit Alimentaire</h5>
+          <button type="button" class="btn-close" (click)="showAddModal = false"></button>
+        </div>
+        <div class="modal-body">
+          <form (ngSubmit)="addFoodItem()">
+            <div class="mb-3">
+              <label class="form-label">Nom du produit</label>
+              <input type="text" class="form-control" [(ngModel)]="newItem.name" name="name" required>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Catégorie</label>
+              <select class="form-control" [(ngModel)]="newItem.category" name="cat" required>
+                <option value="Fruits & Légumes">Fruits & Légumes</option>
+                <option value="Viande">Viande</option>
+                <option value="Produits Laitiers">Produits Laitiers</option>
+                <option value="Boulangerie">Boulangerie</option>
+                <option value="Epicerie">Epicerie</option>
+              </select>
+            </div>
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <label class="form-label">Quantité</label>
+                <input type="number" class="form-control" [(ngModel)]="newItem.quantity" name="quantity" required>
+              </div>
+              <div class="col-md-6 mb-3">
+                <label class="form-label">Unité</label>
+                <select class="form-control" [(ngModel)]="newItem.unit" name="unit">
+                  <option value="kg">kg</option>
+                  <option value="L">Litre</option>
+                  <option value="pcs">Pièces</option>
+                </select>
+              </div>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Date d'expiration</label>
+              <input type="date" class="form-control" [(ngModel)]="newItem.expirationDate" name="exp" required>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Donateur</label>
+              <input type="text" class="form-control" [(ngModel)]="newItem.donorName" name="donor">
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Valeur estimée (€/unité)</label>
+              <input type="number" class="form-control" [(ngModel)]="newItem.estimatedValue" name="value">
+            </div>
+            <button type="submit" class="btn btn-primary w-100">Enregistrer</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Distribute Modal -->
+  <div class="modal d-block" *ngIf="showDistributeModal" style="background: rgba(0,0,0,0.5)">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Distribuer: {{ selectedItem?.name }}</h5>
+          <button type="button" class="btn-close" (click)="showDistributeModal = false"></button>
+        </div>
+        <div class="modal-body">
+          <form (ngSubmit)="distributeFood()">
+            <div class="mb-3">
+              <label class="form-label">Association Bénéficiaire</label>
+              <input type="text" class="form-control" [(ngModel)]="distributionData.association" name="assoc" required>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Quantité à distribuer (Max: {{ selectedItem?.quantity }})</label>
+              <input type="number" class="form-control" [(ngModel)]="distributionData.quantity" name="qty" required [max]="selectedItem?.quantity || 0">
+            </div>
+            <button type="submit" class="btn btn-success w-100">Confirmer la Distribution</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,68 @@
+<section class="ec-home">
+  <div class="ec-home__bg" aria-hidden="true"></div>
+
+  <div class="container ec-home__content">
+    <div class="ec-toolbar">
+      <button type="button" class="ec-btn ec-btn--ghost" routerLink="/cancelReservation">
+        <i class="fa fa-times-circle-o" aria-hidden="true"></i>
+        Annuler une réservation
+      </button>
+    </div>
+
+    <header class="ec-hero">
+      <p class="ec-hero__eyebrow">Découvrez &amp; réservez</p>
+      <h1 class="ec-hero__title">Événements à venir</h1>
+      <p class="ec-hero__subtitle">Choisissez votre événement et obtenez votre billet en quelques clics.</p>
+    </header>
+
+    <div class="row g-4 justify-content-center">
+      <div class="col-lg-4 col-md-6" *ngFor="let event of events">
+        <article class="ec-card">
+          <div class="ec-card__price">
+            <span class="ec-card__currency">€</span>
+            <span class="ec-card__amount">{{ event.price }}</span>
+          </div>
+          <div class="ec-card__body">
+            <h2 class="ec-card__title">{{ event.title }}</h2>
+            <ul class="ec-card__meta">
+              <li>
+                <i class="fa fa-calendar" aria-hidden="true"></i>
+                {{ event.startDate | date:'dd/MM/yyyy' }} → {{ event.endDate | date:'dd/MM/yyyy' }}
+              </li>
+              <li>
+                <i class="fa fa-users" aria-hidden="true"></i>
+                {{ event.capacityMax }} places
+              </li>
+            </ul>
+            <p class="ec-card__desc">{{ (event.description || '') | slice:0:120 }}<ng-container *ngIf="(event.description?.length || 0) > 120">…</ng-container></p>
+            <a class="ec-card__cta" [routerLink]="['/eventDetail', event.id]">
+              Voir les détails
+              <i class="fa fa-arrow-right" aria-hidden="true"></i>
+            </a>
+          </div>
+        </article>
+      </div>
+    </div>
+
+    <nav class="ec-pagination-wrap" *ngIf="!isLoading && totalPages > 1" aria-label="Pagination des événements">
+      <ul class="pagination ec-pagination justify-content-center">
+        <li class="page-item" [class.disabled]="currentPage === 0">
+          <button type="button" class="btn btn-pagination" (click)="prevPage()" [disabled]="currentPage === 0">
+            <i class="fa fa-chevron-left" aria-hidden="true"></i> Précédent
+          </button>
+        </li>
+        <li
+          class="page-item"
+          *ngFor="let page of [].constructor(totalPages); let i = index"
+          [class.active]="i === currentPage">
+          <button type="button" class="btn btn-pagination" (click)="goToPage(i)">{{ i + 1 }}</button>
+        </li>
+        <li class="page-item" [class.disabled]="currentPage >= totalPages - 1">
+          <button type="button" class="btn btn-pagination" (click)="nextPage()" [disabled]="currentPage >= totalPages - 1">
+            Suivant <i class="fa fa-chevron-right" aria-hidden="true"></i>
+          </button>
+        </li>
+      </ul>
+    </nav>
+  </div>
+</section>

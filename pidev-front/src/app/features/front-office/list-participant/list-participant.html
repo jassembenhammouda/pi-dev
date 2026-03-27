@@ -1,0 +1,159 @@
+ <!-- Breadcrumb Section Begin -->
+ <section class="breadcrumb-section">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="breadcrumb-text">
+                    <h2>participant list</h2>
+                    <div class="bt-option">
+                        <a routerLink="/listEvents">Events</a>
+                        <span>Participant</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- Breadcrumb Section End -->
+
+<section class="schedule-table-section spad">
+    <div class="container">
+      <div class="row mb-4">
+        <div class="col-lg-12">
+          <div class="card shadow-sm border-0">
+            <div class="card-body">
+              <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center">
+                <div>
+                  <h3 class="h4 mb-1">{{ event?.title || 'Participants de l\'événement' }}</h3>
+                  <small class="text-muted d-block mb-2">
+                    {{ event?.startDate | date:'fullDate' }}
+                    <span *ngIf="event"> - {{ event.place }}</span>
+                  </small>
+                  <small class="text-muted">
+                    <span>Capacité totale : <strong>{{ totalPlaces }}</strong></span>
+                    <span class="mx-2">•</span>
+                    <span>Confirmés : <strong>{{ confirmedPlaces }}</strong></span>
+                    <span class="mx-2">•</span>
+                    <span>En attente : <strong>{{ pendingPlaces }}</strong></span>
+                    <span class="mx-2">•</span>
+                    <span>Restant : <strong>{{ remainingPlaces }}</strong></span>
+                    <span class="mx-2">•</span>
+                    <span>Réservées total : <strong>{{ totalBookedPlaces }}</strong></span>
+                  </small>
+                </div>
+                <div class="text-md-end mt-3 mt-md-0">
+                  <span class="badge bg-primary me-1">Capacité : {{ totalPlaces }}</span>
+                  <span class="badge bg-success me-1">Confirmés : {{ confirmedPlaces }}</span>
+                  <span class="badge bg-warning text-dark me-1">En attente : {{ pendingPlaces }}</span>
+                  <span class="badge bg-info text-dark me-1">Restant : {{ remainingPlaces }}</span>
+                  <span *ngIf="totalBookedPlaces > totalPlaces" class="badge bg-danger">
+                    Surbooking: +{{ totalBookedPlaces - totalPlaces }}
+                  </span>
+                  <span *ngIf="totalBookedPlaces <= totalPlaces" class="badge bg-success">
+                    OK
+                  </span>
+                </div>
+              </div>
+              <div class="mt-4">
+                <div class="progress" style="height: 14px;">
+                  <div
+                    class="progress-bar"
+                    role="progressbar"
+                    [ngClass]="{
+                      'bg-success': event && (confirmedPlaces / event.capacityMax) < 0.6,
+                      'bg-warning': event && (confirmedPlaces / event.capacityMax) >= 0.6 && (confirmedPlaces / event.capacityMax) < 0.9,
+                      'bg-danger': event && (confirmedPlaces / event.capacityMax) >= 0.9
+                    }"
+                    [style.width.%]="event ? (confirmedPlaces / event.capacityMax) * 100 : 0"
+                    [attr.aria-valuenow]="confirmedPlaces"
+                    [attr.aria-valuemin]="0"
+                    [attr.aria-valuemax]="event?.capacityMax || 100"
+                  >
+                    {{ (event ? (confirmedPlaces / event.capacityMax) * 100 : 0) | number:'1.0-0' }}%
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-lg-12">
+          <div class="schedule-table-tab">
+
+            <!-- Onglets -->
+            <ul class="nav nav-tabs" role="tablist">
+              <li class="nav-item">
+                <a class="nav-link active" data-toggle="tab" href="#tabs-1" role="tab">CONFIRMED</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" data-toggle="tab" href="#tabs-2" role="tab">WAITING</a>
+              </li>
+            </ul>
+  
+            <!-- Contenu -->                                                                           
+                                                                                                                                                            
+            <div class="tab-content">
+              
+              <!-- Confirmed -->
+              <div class="tab-pane active" id="tabs-1" role="tabpanel">
+                <div class="schedule-table-content">
+                  <table class="table table-bordered">
+                    <thead>
+                      <tr>
+                        <th>First Name</th>
+                        <th>Last Name</th>
+                        <th>Email Participant</th>
+                        <th>Nb Places</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor="let r of Confirmedparticipants">
+                        <td>{{ r.firstNameParticipant }}</td>
+                        <td>{{ r.lastNameParticipant }}</td>
+                        <td>{{ r.emailParticipant }}</td>
+                        <td>{{ r.nbPlace || 0 }}</td>
+                      </tr>
+                      <tr *ngIf="Confirmedparticipants.length === 0">
+                        <td colspan="3" class="text-center">No confirmed participants</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+  
+              <!-- Pending -->
+              <div class="tab-pane" id="tabs-2" role="tabpanel">
+                <div class="schedule-table-content">
+                  <table class="table table-bordered">
+                    <thead>
+                      <tr>
+                        <th>First Name</th>
+                        <th>Last Name</th>
+                        <th>Email Participant</th>
+                        <th>Nb Places</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor="let r of pendingParticipants">
+                        <td>{{ r.firstNameParticipant }}</td>
+                        <td>{{ r.lastNameParticipant }}</td>
+                        <td>{{ r.emailParticipant }}</td>
+                        <td>{{ r.nbPlace || 0 }}</td>
+                      </tr>
+                      <tr *ngIf="pendingParticipants.length === 0">
+                        <td colspan="3" class="text-center">No participants waiting</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+  
+            </div><!-- tab-content -->
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  
+  
